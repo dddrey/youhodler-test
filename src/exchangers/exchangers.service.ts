@@ -1,26 +1,28 @@
 import { Injectable } from '@nestjs/common';
-import { CurrencyPairDto } from '../rates/dto/currency-pair.dto';
-import { ExchangerDto } from './dto/exchanger.dto';
-import { ConfigService } from '@nestjs/config';
+import { IExchange } from './interfaces/exchange.interface';
+import { BinanceExchangeService } from './exchanges/binance.exchange.service';
 
 @Injectable()
 export class ExchangersService {
-  constructor(private readonly configService: ConfigService) {}
+  private exchanges: Record<string, IExchange>;
 
-  async getRatesFor(
-    currencyPair: CurrencyPairDto['pair'],
-    exchanger: ExchangerDto['exchangerName'],
-  ) {
-    const url = `https://api.binance.com/api/v3/ticker/bookTicker?symbol=${currencyPair}`;
+  constructor(binanceService: BinanceExchangeService) {
+    this.exchanges = {
+      binance: binanceService,
+      // Add other exchanges here
+    };
+  }
 
-    // add cache for UPDATE_FREQUENCY seconds
+  async getRatesFor(currencyPair: string, exchanger: string) {
+    const exchangeService = this.exchanges[exchanger];
+    if (!exchangeService) {
+      throw new Error(`Exchange ${exchanger} not supported`);
+    }
 
     try {
-      const response = await fetch(url);
-      return response.json();
+      return await exchangeService.getRates(currencyPair);
     } catch (error) {
-      // Handle error appropriately
-      throw new Error('Failed to fetch rates from Binance');
+      throw new Error(`Failed to fetch rates from ${exchanger}`);
     }
   }
 }
