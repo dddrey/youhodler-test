@@ -1,13 +1,7 @@
-import { forwardRef, Module } from '@nestjs/common';
-import { ExchangersService } from './exchangers.service';
-import { ExchangersController } from './exchangers.controller';
-import { RatesModule } from 'src/rates/rates.module';
-import { BinanceExchangeService } from './exchanges/binance.exchange.service';
+import { Module } from '@nestjs/common';
+import { BinanceModule } from './binance/binance.module';
 
 @Module({
-  imports: [forwardRef(() => RatesModule)],
-  controllers: [ExchangersController],
-  providers: [ExchangersService, BinanceExchangeService],
-  exports: [ExchangersService],
+  imports: [BinanceModule],
 })
 export class ExchangersModule {}
