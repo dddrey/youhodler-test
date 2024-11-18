@@ -16,6 +16,9 @@ coverage
 .env
 .env.*
 
+setup.sh
+run.sh
+
 # Ignore build artifacts
 dist
 build
