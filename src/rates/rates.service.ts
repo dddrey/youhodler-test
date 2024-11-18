@@ -15,8 +15,9 @@ export class RatesService {
     exchanger: ExchangerDto['exchangerName'],
     pair: CurrencyPairDto['pair'],
   ) {
-    const serviceCommission =
-      this.configService.get<number>('SERVICE_COMMISSION');
+    const serviceCommission = this.configService.get<number>(
+      'vars.serviceCommission',
+    );
     const rates = await this.exchangersService.getRatesFor(pair, exchanger);
     const adjustedBid =
       parseFloat(rates.bidPrice) * (1 - serviceCommission / 100);

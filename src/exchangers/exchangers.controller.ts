@@ -3,12 +3,14 @@ import {
   Get,
   Param,
   Query,
+  UseInterceptors,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
 import { ExchangerDto } from './dto/exchanger.dto';
 import { CurrencyPairDto } from 'src/rates/dto/currency-pair.dto';
 import { RatesService } from 'src/rates/rates.service';
+import { CustomCacheInterceptor } from 'src/common/interceptors/custom-cache.interceptor';
 
 @Controller('exchangers')
 export class ExchangersController {
@@ -16,6 +18,7 @@ export class ExchangersController {
 
   @Get(':exchangerName/rates')
   @UsePipes(new ValidationPipe())
+  @UseInterceptors(CustomCacheInterceptor)
   getRates(
     @Param() exchangerDto: ExchangerDto,
     @Query() currencyPairDto: CurrencyPairDto,
