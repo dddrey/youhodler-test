@@ -35,7 +35,7 @@ ENV SERVICE_COMMISSION=${SERVICE_COMMISSION}
 
 EXPOSE ${PORT}
 
-HEALTHCHECK  --interval=4s --timeout=1s \
-  CMD wget --no-verbose --tries=1 --spider http://0.0.0.0:${PORT}/ || exit 1
+HEALTHCHECK  --interval=1s --timeout=1s \
+  CMD wget --no-verbose --tries=1 --spider http://0.0.0.0:${PORT}/health || exit 1
 
 CMD [ "pnpm", "run", "start:prod" ]

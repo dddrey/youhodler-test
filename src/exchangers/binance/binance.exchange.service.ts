@@ -1,11 +1,16 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { AbstractExchangerService } from '../abstract.service';
 import { ConfigService } from '@nestjs/config';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
 
 @Injectable()
 export class BinanceExchangeService extends AbstractExchangerService {
-  constructor(private readonly configService: ConfigService) {
-    super();
+  constructor(
+    @Inject(CACHE_MANAGER) cacheManager: Cache,
+    configService: ConfigService,
+  ) {
+    super(cacheManager, configService);
   }
 
   async getExchangeRates(currencyPair) {
@@ -23,6 +28,6 @@ export class BinanceExchangeService extends AbstractExchangerService {
   }
 
   getComissionRate() {
-    return this.configService.get<number>('binance.comissionRate');
+    return this.configService.get<number>('vars.serviceCommission');
   }
 }
